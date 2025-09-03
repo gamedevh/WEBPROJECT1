@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relentless K9 LLC</title>
+  <meta name="description" content="Relentless K9 LLC — premium leashes, collars, and working-dog gear." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="$1  <link rel="preload" href="doberman-bg.jpg?v=1" as="image">
+  <style>
+    :root{
+      --bg:#0f141b;           /* near-black */
+      --bg-2:#151c25;         /* card background */
+      --ink:#e8edf4;          /* main text */
+      --muted:#aeb7c5;        /* secondary text */
+      --brand:#6b7c93;        /* slate blue */
+      --accent:#cbd5e1;       /* light accents */
+      --ring: rgba(203,213,225,.45);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --bg-pos: center center;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--ink);
+      background: var(--bg);
+      overflow-x:hidden;
+    }
+
+    /* ===== Attention‑grabbing background (photo + animated subtle motion + pattern) ===== */
+    /* Drop a brand photo named relentless-bg.jpg next to index.html to override the fallback. */
+    body::before{
+      content:""; position:fixed; inset:0; z-index:-3;
+      /* Only use the Doberman background provided by you. No other fallbacks. */
+      background-image:
+        linear-gradient(180deg, rgba(10,12,16,.68) 10%, rgba(10,12,16,.55) 40%, rgba(10,12,16,.72) 100%),
+        url('doberman-bg.jpg?v=1');
+      background-size: cover, cover;
+      background-position: center, var(--bg-pos);
+      filter: brightness(.95) saturate(110%);
+      transform: scale(1.05);
+      animation: kenburns 26s ease-in-out infinite alternate;
+    }
+    body::after{
+      content:""; position:fixed; inset:0; z-index:-2;
+      background:
+        radial-gradient(1200px 600px at -10% -10%, rgba(255,255,255,.05), transparent 60%),
+        radial-gradient(900px 700px at 110% 120%, rgba(255,255,255,.04), transparent 60%),
+        repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 2px, transparent 2px 24px);
+      pointer-events:none;
+    }
+    @keyframes kenburns{ from{ transform: scale(1.05) translateY(-1%);} to{ transform: scale(1.12) translateY(1%);} }
+
+    /* Respect users that prefer reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      body::before{ animation:none; transform:none; }
+    }
+
+    /* -------- Intro overlay with blurred background -------- */
+    #intro{
+      position:fixed; inset:0; z-index:9999;
+      display:grid; place-items:center; 
+      pointer-events:auto; /* block access until reveal */
+      background:rgba(10,12,16,.35);
+      backdrop-filter: blur(18px) saturate(120%);
+      -webkit-backdrop-filter: blur(18px) saturate(120%);
+      transition: opacity .8s ease, visibility .8s ease;
+    }
+    body.site-revealed #intro{ opacity:0; visibility:hidden; pointer-events:none; }
+
+    .logo-wrap{
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-160vh) scale(.96); 
+      display:flex; align-items:center; justify-content:center;
+      width:min(64vmin, 420px); aspect-ratio:1/1; 
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,.45));
+      will-change: transform;
+      opacity:0;
+    }
+
+    /* Smoother falling logo animation */
+    .logo-wrap.play{ animation: dropIn 1500ms cubic-bezier(.16,.99,.18,1) forwards; }
+    .logo-wrap.play .ring{ animation: ring 1500ms ease-out forwards; }
+
+    @keyframes dropIn{ 
+      0%{ transform: translate(-50%,-160vh) scale(.96); opacity:0; }
+      60%{ transform: translate(-50%,-54%) scale(1.03); opacity:1; }
+      80%{ transform: translate(-50%,-49%) scale(.995); }
+      92%{ transform: translate(-50%,-51%) scale(1.002); }
+      100%{ transform: translate(-50%,-50%) scale(1); }
+    }
+    @keyframes ring{ 
+      0%{ transform: scale(.6); opacity:.0; } 
+      65%{ transform: scale(1.05); opacity:.5; }
+      100%{ transform: scale(1); opacity:.25; }
+    }
+
+    .ring{ position:absolute; inset:-24px; border-radius:999px; box-shadow:0 0 0 1px rgba(255,255,255,.07) inset, 0 0 0 32px rgba(107,124,147,.18) inset; filter: blur(1px); opacity:.0; transform:scale(.8); }
+    .logo{ width:100%; height:100%; object-fit:contain; display:block; border-radius: 14px; user-select:none; -webkit-user-drag:none; }
+    .sound-cta{ position:absolute; bottom:28px; left:50%; transform:translateX(-50%); background:rgba(21,28,37,.86); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 14px; color:var(--ink); display:none; cursor:pointer; box-shadow: var(--shadow); }
+
+    /* -------- Main site layout -------- */
+    .site{ 
+      opacity:0; filter: blur(10px); transform: translateY(12px);
+      transition: opacity .8s ease .2s, filter .8s ease .2s, transform .7s ease .2s;
+      pointer-events:none; /* locked until reveal */
+    }
+    body.site-revealed .site{ opacity:1; filter:none; transform:none; pointer-events:auto; }
+
+    header{ position:sticky; top:0; z-index:40; background: rgba(21,28,37,.7); backdrop-filter: blur(10px) saturate(120%); -webkit-backdrop-filter: blur(10px) saturate(120%); border-bottom:1px solid rgba(255,255,255,.06); }
+    .nav{ max-width:1100px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:16px; }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px; }
+    .brand img{ width:34px; height:34px; object-fit:contain; border-radius:8px; }
+    .spacer{ flex:1 }
+    .links a{ color:var(--ink); text-decoration:none; margin-left:18px; font-weight:600; opacity:.9 }
+    .links a:hover{ opacity:1 }
+    .cta{ padding:10px 14px; border-radius:12px; background:linear-gradient(180deg,#93a1b2,#6b7c93); color:#0f141b; font-weight:800; box-shadow: var(--shadow); border:none; cursor:pointer; }
+
+    main{ max-width:1100px; margin:34px auto 10px; padding:0 18px 60px; }
+
+    /* PAGES */
+    .page{ display:none; }
+    .page.active{ display:block; }
+
+    .hero{ margin:0 0 22px; display:grid; gap:18px; grid-template-columns: 1.1fr .9fr; align-items:center; }
+    .hero h1{ font-size: clamp(34px, 3.4vw, 52px); line-height:1.05; margin:0 0 10px; }
+    .hero p{ color:var(--muted); margin:0 0 14px; font-size: clamp(14px, 1.4vw, 18px); }
+
+    .hero-card{ background:var(--bg-2); padding:24px; border-radius:var(--radius); border:1px solid rgba(255,255,255,.06); box-shadow: var(--shadow); }
+
+    /* Shop */
+    .shop-toolbar{ display:flex; gap:10px; align-items:center; margin:0 0 14px; flex-wrap:wrap; }
+    .input, .select{ background:var(--bg-2); color:var(--ink); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px 12px; }
+    .prod-grid{ display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); }
+    .card{ background:var(--bg-2); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); overflow:hidden; box-shadow: var(--shadow); display:flex; flex-direction:column; }
+    .card img{ width:100%; height:170px; object-fit:cover; }
+    .card .info{ padding:14px 14px 16px; display:grid; gap:6px; }
+    .price{ font-weight:800; }
+    .btn{ border:1px solid var(--ring); background:transparent; color:var(--ink); padding:10px 12px; border-radius:12px; cursor:pointer; }
+    .btn:hover{ background: rgba(203,213,225,.07); }
+    .shopify-root{ padding:12px; }
+
+    /* About page cards */
+    .about-grid{ display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); }
+    .about-card{ background:var(--bg-2); border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+    .about-card h3{ margin:0 0 8px; }
+    .about-card p, .about-card li{ color:var(--muted); }
+
+    footer{ border-top:1px solid rgba(255,255,255,.07); padding:28px 18px; color:var(--muted); text-align:center; }
+
+    /* Mobile tweaks */
+    @media (max-width: 860px){
+      .hero{ grid-template-columns: 1fr; }
+      .links{ display:none }
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro / splash overlay -->
+  <div id="intro" aria-hidden="true">
+    <div class="logo-wrap" id="logoWrapper">
+      <span class="ring" aria-hidden="true"></span>
+      <img class="logo" id="rk9Logo" src="logo.png" alt="Relentless K9 LLC logo" />
+      <button id="soundBtn" class="sound-cta" type="button">🔊 Enable sound</button>
+    </div>
+    <!-- Hidden audio element (uses your uploaded bark.mp3) -->
+    <audio id="barkAudio" preload="auto">
+      <source src="bark.mp3" type="audio/mpeg">
+      <source src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Barking_of_a_dog.ogg" type="audio/ogg">
+    </audio>
+  </div>
+
+  <!-- Main site -->
+  <div class="site" id="site">
+    <header>
+      <nav class="nav">
+        <a class="brand" href="#/" aria-label="Relentless K9 Home">
+          <img src="logo.png" alt="RK9" />
+          <span>Relentless K9</span>
+        </a>
+        <div class="spacer"></div>
+        <div class="links" aria-label="Primary">
+          <a href="#/shop">Shop</a>
+          <a href="#/about">About</a>
+          <a href="#/contact">Contact</a>
+          <button class="cta" onclick="go('#/shop')">Shop now</button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HOME -->
+      <section id="page-home" class="page active" role="region" aria-labelledby="home-heading">
+        <div class="hero">
+          <div class="hero-card">
+            <h1 id="home-heading">Built for Working Dogs. <br/>Trusted by <em>Relentless</em> Handlers.</h1>
+            <p>Premium leashes, collars, and K9 accessories engineered for durability and comfort. Launching with our first collection — and expanding fast.</p>
+            <button class="btn" onclick="go('#/shop')">Browse featured gear</button>
+          </div>
+          <div class="hero-card" style="display:grid; place-items:center; min-height:220px;">
+            <p style="margin:0; color:var(--muted); text-align:center">Add a promo image or video here later (e.g., handler + K9 action shot).</p>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h2 style="margin:0 0 8px">Why Relentless K9?</h2>
+          <p style="margin:0; color:var(--muted)">We build gear we trust with our own dogs. Rugged materials, clean design, and field‑tested hardware. This is a live preview — we’ll wire in a full store and CMS next.</p>
+        </div>
+      </section>
+
+      <!-- SHOP -->
+      <section id="page-shop" class="page" role="region" aria-labelledby="shop-heading">
+        <h1 id="shop-heading" style="margin-top:0">Shop</h1>
+        <div class="shop-toolbar">
+          <input id="searchInput" class="input" type="search" placeholder="Search products by name…" aria-label="Search products by name" />
+          <select id="sortSelect" class="select" aria-label="Sort products">
+            <option value="none">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+        <div id="shopGrid" class="prod-grid" aria-live="polite"></div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="page-about" class="page" role="region" aria-labelledby="about-heading">
+        <h1 id="about-heading" style="margin-top:0">About Us</h1>
+        <div class="about-grid" style="margin-bottom:16px;">
+          <div class="about-card">
+            <h3>Our Mission</h3>
+            <p>Relentless K9 builds dependable gear for working dogs and the people who rely on them—handlers, trainers, and everyday owners who demand better than big‑box quality.</p>
+          </div>
+          <div class="about-card">
+            <h3>Craft & Materials</h3>
+            <ul>
+              <li>Heavy‑duty webbing and tactical‑grade stitching</li>
+              <li>Hardware options: solid steel or aviation‑grade aluminum</li>
+              <li>Comfort‑focused design to protect the dog’s neck and coat</li>
+            </ul>
+          </div>
+          <div class="about-card">
+            <h3>Field‑Tested</h3>
+            <p>Products are trained and tested with real dogs before they launch. If it doesn’t hold up, it doesn’t ship.</p>
+          </div>
+          <div class="about-card">
+            <h3>Warranty</h3>
+            <p>Simple promise: if your gear fails under normal use, we’ll repair or replace it. Full policy coming at launch.</p>
+          </div>
+          <div class="about-card">
+            <h3>Programs</h3>
+            <ul>
+              <li>Handler / Trainer bulk orders</li>
+              <li>LEO / Military appreciation discounts</li>
+              <li>Affiliate & ambassador options</li>
+            </ul>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2 style="margin:0 0 6px">Owner’s Statement</h2>
+          <p style="margin:0; color:var(--muted)">Paste the owner’s statement below when it’s ready. The layout will adapt automatically.</p>
+          <div id="ownerStatement" style="min-height:140px; padding:14px 0; color:var(--ink);"></div>
+        </div>
+      </section>
+
+      <!-- CONTACT (placeholder) -->
+      <section id="page-contact" class="page" role="region" aria-labelledby="contact-heading">
+        <h1 id="contact-heading" style="margin-top:0">Contact</h1>
+        <div class="hero-card">
+          <p style="margin:0">Email: <a href="mailto:info@relentlessk9.com">info@relentlessk9.com</a> (update to your real inbox)</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <small>© <span id="year"></span> Relentless K9 LLC. All rights reserved.</small>
+    </footer>
+  </div>
+
+  <script>
+    // Utilities
+    const $ = (sel)=>document.querySelector(sel);
+    const $$ = (sel)=>Array.from(document.querySelectorAll(sel));
+
+    // Set current year
+    $('#year').textContent = new Date().getFullYear();
+
+    // -------- Logo fall-in + sound --------
+    const logoWrap = $('#logoWrapper');
+    const barkAudio = $('#barkAudio');
+    const soundBtn = $('#soundBtn');
+
+    function reveal(){ document.body.classList.add('site-revealed'); }
+
+    // Start animation when image is loaded (prevents jank)
+    const img = $('#rk9Logo');
+    function start(){
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduced){ reveal(); return; }
+      logoWrap.classList.add('play');
+      // Try to play bark for 5 seconds
+      playBark();
+    }
+    if(img.complete){ start(); } else { img.addEventListener('load', start); }
+
+    async function playBark(){
+      try {
+        barkAudio.currentTime = 0;
+        const p = barkAudio.play();
+        if(p && p.then){ await p; }
+        soundBtn.style.display = 'none';
+        setTimeout(()=>{ try{ barkAudio.pause(); }catch(e){} }, 5000);
+      } catch(err){
+        // Autoplay likely blocked — show enable button and also start on first user interaction
+        soundBtn.style.display = 'inline-flex';
+        const once = ()=>{ soundBtn.style.display = 'none'; playBark(); window.removeEventListener('pointerdown', once); };
+        window.addEventListener('pointerdown', once, { once:true });
+      }
+    }
+    soundBtn.addEventListener('click', ()=>{ playBark(); });
+
+    // Reveal site after animation
+    logoWrap.addEventListener('animationend', (e)=>{ if(e.animationName === 'dropIn'){ setTimeout(reveal, 220); } });
+    // Safety timeout: if anything goes wrong, unlock the site after 2.8s
+    setTimeout(()=>{ document.body.classList.add('site-revealed'); }, 2800);
+
+    // -------- Tiny client-side router --------
+    function show(id){
+      $$('.page').forEach(p=>p.classList.remove('active'));
+      const el = document.getElementById('page-'+id);
+      if(el){ el.classList.add('active'); }
+      const h = el && el.querySelector('h1');
+      if(h){ h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); h.removeAttribute('tabindex'); }
+    }
+    function parseHash(){
+      const h = location.hash || '#/';
+      if(h.startsWith('#/shop')){ show('shop'); renderShop(); }
+      else if(h.startsWith('#/about')){ show('about'); }
+      else if(h.startsWith('#/contact')){ show('contact'); }
+      else { show('home'); }
+    }
+    window.addEventListener('hashchange', parseHash);
+    function go(hash){ location.hash = hash; }
+    window.go = go; // expose for inline onclick
+
+    // -------- Shopify Buy Button scaffold --------
+    // Flip enabled:true and fill in your credentials to activate.
+    const SHOPIFY = {
+      enabled: false, // set to true when your store is ready
+      domain: 'YOUR-SHOP.myshopify.com',
+      storefrontAccessToken: 'YOUR_STOREFRONT_TOKEN',
+      moneyFormat: '${{amount}}',
+      productMap: {
+        'p1': 'PRODUCT_ID_1',
+        'p2': 'PRODUCT_ID_2',
+        'p3': 'PRODUCT_ID_3',
+        'p4': 'PRODUCT_ID_4',
+        'p5': 'PRODUCT_ID_5',
+        'p6': 'PRODUCT_ID_6',
+        'p7': 'PRODUCT_ID_7',
+        'p8': 'PRODUCT_ID_8'
+      }
+    };
+
+    function loadShopifyUI(){
+      return new Promise((resolve)=>{
+        if(!SHOPIFY.enabled){ return resolve(null); }
+        const url = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+        function init(){
+          const client = ShopifyBuy.buildClient({ domain: SHOPIFY.domain, storefrontAccessToken: SHOPIFY.storefrontAccessToken });
+          ShopifyBuy.UI.onReady(client).then(ui=>resolve(ui));
+        }
+        if(window.ShopifyBuy && window.ShopifyBuy.UI){ init(); return; }
+        const s = document.createElement('script'); s.async = true; s.src = url; s.onload = init; document.head.appendChild(s);
+      });
+    }
+
+    async function mountShopifyButton(product){
+      if(!SHOPIFY.enabled) return;
+      const shopifyId = SHOPIFY.productMap[product.id];
+      if(!shopifyId) return;
+      const node = document.getElementById('shopify-'+product.id);
+      if(!node) return;
+      const ui = await loadShopifyUI();
+      if(!ui) return;
+      const fallback = node.parentElement.querySelector('.fallback-btn');
+      if(fallback) fallback.remove();
+      node.hidden = false;
+      ui.createComponent('product', {
+        id: shopifyId,
+        node,
+        moneyFormat: SHOPIFY.moneyFormat,
+        options: {
+          product: { buttonDestination: 'cart', isButton: true, contents: { img: false, title: false, price: true } },
+          cart: { startOpen: false },
+          modalProduct: { contents: { img: true, button: true } }
+        }
+      });
+    }
+
+    // -------- Shop: data + rendering + search/sort --------
+    const PRODUCTS = [
+      { id:'p1', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?doberman,gear' },
+      { id:'p2', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?dog,collar' },
+      { id:'p3', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?dog,leash' },
+      { id:'p4', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?working-dog' },
+      { id:'p5', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?k9,training' },
+      { id:'p6', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?dog,accessories' },
+      { id:'p7', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?doberman' },
+      { id:'p8', name:'AWAITING PRODUCT', price:0.00, image:'https://source.unsplash.com/800x600/?dog,tactical' }
+    ];
+
+    const shopGrid = $('#shopGrid');
+    const searchInput = $('#searchInput');
+    const sortSelect = $('#sortSelect');
+
+    function renderShop(){
+      const q = (searchInput.value||'').trim().toLowerCase();
+      const sort = sortSelect.value;
+      let list = PRODUCTS.filter(p => p.name.toLowerCase().includes(q));
+      if(sort === 'price-asc') list = list.slice().sort((a,b)=>a.price-b.price);
+      if(sort === 'price-desc') list = list.slice().sort((a,b)=>b.price-a.price);
+
+      shopGrid.innerHTML = list.map(p=>`<article class="card">
+          <img src="${p.image}" alt="${p.name}">
+          <div class="info">
+            <strong>${p.name}</strong>
+            <span class="price">$${p.price.toFixed(2)}</span>
+            <div id="shopify-${p.id}" class="shopify-root" hidden></div>
+            <button class="btn fallback-btn" aria-label="Add ${p.name} to cart" onclick="alert('Cart coming soon — Shopify button will appear once configured.')">Add to cart</button>
+          </div>
+        </article>`).join('');
+
+      if(SHOPIFY.enabled){ list.forEach(p=> mountShopifyButton(p)); }
+
+      if(list.length === 0){ shopGrid.innerHTML = `<div class="hero-card" style="grid-column:1/-1">No products match "${q}".</div>`; }
+    }
+
+    searchInput && searchInput.addEventListener('input', renderShop);
+    sortSelect && sortSelect.addEventListener('change', renderShop);
+
+    // Initial route + shop render
+    parseHash();
+    renderShop();
+  </script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relentless K9 LLC</title>
+  <meta name="description" content="Relentless K9 LLC — premium leashes, collars, and working-dog gear." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f141b;           /* near-black */
+      --bg-2:#151c25;         /* card background */
+      --ink:#e8edf4;          /* main text */
+      --muted:#aeb7c5;        /* secondary text */
+      --brand:#6b7c93;        /* slate blue */
+      --accent:#cbd5e1;       /* light accents */
+      --ring: rgba(203,213,225,.45);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--ink);
+      background: var(--bg);
+      overflow-x:hidden;
+    }
+
+    /* ===== Attention‑grabbing background (photo + animated subtle motion + pattern) ===== */
+    /* Drop a brand photo named relentless-bg.jpg next to index.html to override the fallback. */
+    body::before{
+      content:""; position:fixed; inset:0; z-index:-3;
+      background-image:
+        linear-gradient(180deg, rgba(10,12,16,.68) 10%, rgba(10,12,16,.55) 40%, rgba(10,12,16,.72) 100%),
+        url('relentless-bg.jpg'),
+        url('relentlessfinalshadow.jpeg'),
+        url('https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?q=80&w=1600&auto=format&fit=crop');
+      background-size: cover, cover, cover, cover;
+      background-position: center, center, center, center;
+      filter: brightness(.95) saturate(110%);
+      transform: scale(1.05);
+      animation: kenburns 26s ease-in-out infinite alternate;
+    }
+    body::after{
+      content:""; position:fixed; inset:0; z-index:-2;
+      background:
+        radial-gradient(1200px 600px at -10% -10%, rgba(255,255,255,.05), transparent 60%),
+        radial-gradient(900px 700px at 110% 120%, rgba(255,255,255,.04), transparent 60%),
+        repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 2px, transparent 2px 24px);
+      pointer-events:none;
+    }
+    @keyframes kenburns{ from{ transform: scale(1.05) translateY(-1%);} to{ transform: scale(1.12) translateY(1%);} }
+
+    /* Respect users that prefer reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      body::before{ animation:none; transform:none; }
+    }
+
+    /* -------- Intro overlay with blurred background -------- */
+    #intro{
+      position:fixed; inset:0; z-index:9999;
+      display:grid; place-items:center; 
+      pointer-events:auto; /* block access until reveal */
+      background:rgba(10,12,16,.35);
+      backdrop-filter: blur(18px) saturate(120%);
+      -webkit-backdrop-filter: blur(18px) saturate(120%);
+      transition: opacity .8s ease, visibility .8s ease;
+    }
+    body.site-revealed #intro{ opacity:0; visibility:hidden; pointer-events:none; }
+
+    .logo-wrap{
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-160vh) scale(.96); 
+      display:flex; align-items:center; justify-content:center;
+      width:min(64vmin, 420px); aspect-ratio:1/1; 
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,.45));
+      will-change: transform;
+      opacity:0;
+    }
+
+    /* Smoother falling logo animation */
+    .logo-wrap.play{ animation: dropIn 1500ms cubic-bezier(.16,.99,.18,1) forwards; }
+    .logo-wrap.play .ring{ animation: ring 1500ms ease-out forwards; }
+
+    @keyframes dropIn{ 
+      0%{ transform: translate(-50%,-160vh) scale(.96); opacity:0; }
+      60%{ transform: translate(-50%,-54%) scale(1.03); opacity:1; }
+      80%{ transform: translate(-50%,-49%) scale(.995); }
+      92%{ transform: translate(-50%,-51%) scale(1.002); }
+      100%{ transform: translate(-50%,-50%) scale(1); }
+    }
+    @keyframes ring{ 
+      0%{ transform: scale(.6); opacity:.0; } 
+      65%{ transform: scale(1.05); opacity:.5; }
+      100%{ transform: scale(1); opacity:.25; }
+    }
+
+    .ring{ position:absolute; inset:-24px; border-radius:999px; box-shadow:0 0 0 1px rgba(255,255,255,.07) inset, 0 0 0 32px rgba(107,124,147,.18) inset; filter: blur(1px); opacity:.0; transform:scale(.8); }
+    .logo{ width:100%; height:100%; object-fit:contain; display:block; border-radius: 14px; user-select:none; -webkit-user-drag:none; }
+    .sound-cta{ position:absolute; bottom:28px; left:50%; transform:translateX(-50%); background:rgba(21,28,37,.86); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 14px; color:var(--ink); display:none; cursor:pointer; box-shadow: var(--shadow); }
+
+    /* -------- Main site layout -------- */
+    .site{ 
+      opacity:0; filter: blur(10px); transform: translateY(12px);
+      transition: opacity .8s ease .2s, filter .8s ease .2s, transform .7s ease .2s;
+      pointer-events:none; /* locked until reveal */
+    }
+    body.site-revealed .site{ opacity:1; filter:none; transform:none; pointer-events:auto; }
+
+    header{ position:sticky; top:0; z-index:40; background: rgba(21,28,37,.7); backdrop-filter: blur(10px) saturate(120%); -webkit-backdrop-filter: blur(10px) saturate(120%); border-bottom:1px solid rgba(255,255,255,.06); }
+    .nav{ max-width:1100px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:16px; }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px; }
+    .brand img{ width:34px; height:34px; object-fit:contain; border-radius:8px; }
+    .spacer{ flex:1 }
+    .links a{ color:var(--ink); text-decoration:none; margin-left:18px; font-weight:600; opacity:.9 }
+    .links a:hover{ opacity:1 }
+    .cta{ padding:10px 14px; border-radius:12px; background:linear-gradient(180deg,#93a1b2,#6b7c93); color:#0f141b; font-weight:800; box-shadow: var(--shadow); border:none; cursor:pointer; }
+
+    main{ max-width:1100px; margin:34px auto 10px; padding:0 18px 60px; }
+
+    /* PAGES */
+    .page{ display:none; }
+    .page.active{ display:block; }
+
+    .hero{ margin:0 0 22px; display:grid; gap:18px; grid-template-columns: 1.1fr .9fr; align-items:center; }
+    .hero h1{ font-size: clamp(34px, 3.4vw, 52px); line-height:1.05; margin:0 0 10px; }
+    .hero p{ color:var(--muted); margin:0 0 14px; font-size: clamp(14px, 1.4vw, 18px); }
+
+    .hero-card{ background:var(--bg-2); padding:24px; border-radius:var(--radius); border:1px solid rgba(255,255,255,.06); box-shadow: var(--shadow); }
+
+    /* Shop */
+    .shop-toolbar{ display:flex; gap:10px; align-items:center; margin:0 0 14px; flex-wrap:wrap; }
+    .input, .select{ background:var(--bg-2); color:var(--ink); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px 12px; }
+    .prod-grid{ display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); }
+    .card{ background:var(--bg-2); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); overflow:hidden; box-shadow: var(--shadow); display:flex; flex-direction:column; }
+    .card img{ width:100%; height:170px; object-fit:cover; }
+    .card .info{ padding:14px 14px 16px; display:grid; gap:6px; }
+    .price{ font-weight:800; }
+    .btn{ border:1px solid var(--ring); background:transparent; color:var(--ink); padding:10px 12px; border-radius:12px; cursor:pointer; }
+    .btn:hover{ background: rgba(203,213,225,.07); }
+    .shopify-root{ padding:12px; }
+
+    /* About page cards */
+    .about-grid{ display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); }
+    .about-card{ background:var(--bg-2); border:1px solid rgba(255,255,255,.06); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+    .about-card h3{ margin:0 0 8px; }
+    .about-card p, .about-card li{ color:var(--muted); }
+
+    footer{ border-top:1px solid rgba(255,255,255,.07); padding:28px 18px; color:var(--muted); text-align:center; }
+
+    /* Mobile tweaks */
+    @media (max-width: 860px){
+      .hero{ grid-template-columns: 1fr; }
+      .links{ display:none }
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro / splash overlay -->
+  <div id="intro" aria-hidden="true">
+    <div class="logo-wrap" id="logoWrapper">
+      <span class="ring" aria-hidden="true"></span>
+      <img class="logo" id="rk9Logo" src="logo.png" alt="Relentless K9 LLC logo" />
+      <button id="soundBtn" class="sound-cta" type="button">🔊 Enable sound</button>
+    </div>
+    <!-- Hidden audio element (uses your uploaded bark.mp3) -->
+    <audio id="barkAudio" preload="auto">
+      <source src="bark.mp3" type="audio/mpeg">
+      <source src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Barking_of_a_dog.ogg" type="audio/ogg">
+    </audio>
+  </div>
+
+  <!-- Main site -->
+  <div class="site" id="site">
+    <header>
+      <nav class="nav">
+        <a class="brand" href="#/" aria-label="Relentless K9 Home">
+          <img src="logo.png" alt="RK9" />
+          <span>Relentless K9</span>
+        </a>
+        <div class="spacer"></div>
+        <div class="links" aria-label="Primary">
+          <a href="#/shop">Shop</a>
+          <a href="#/about">About</a>
+          <a href="#/contact">Contact</a>
+          <button class="cta" onclick="go('#/shop')">Shop now</button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HOME -->
+      <section id="page-home" class="page active" role="region" aria-labelledby="home-heading">
+        <div class="hero">
+          <div class="hero-card">
+            <h1 id="home-heading">Built for Working Dogs. <br/>Trusted by <em>Relentless</em> Handlers.</h1>
+            <p>Premium leashes, collars, and K9 accessories engineered for durability and comfort. Launching with our first collection — and expanding fast.</p>
+            <button class="btn" onclick="go('#/shop')">Browse featured gear</button>
+          </div>
+          <div class="hero-card" style="display:grid; place-items:center; min-height:220px;">
+            <p style="margin:0; color:var(--muted); text-align:center">Add a promo image or video here later (e.g., handler + K9 action shot).</p>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h2 style="margin:0 0 8px">Why Relentless K9?</h2>
+          <p style="margin:0; color:var(--muted)">We build gear we trust with our own dogs. Rugged materials, clean design, and field‑tested hardware. This is a live preview — we’ll wire in a full store and CMS next.</p>
+        </div>
+      </section>
+
+      <!-- SHOP -->
+      <section id="page-shop" class="page" role="region" aria-labelledby="shop-heading">
+        <h1 id="shop-heading" style="margin-top:0">Shop</h1>
+        <div class="shop-toolbar">
+          <input id="searchInput" class="input" type="search" placeholder="Search products by name…" aria-label="Search products by name" />
+          <select id="sortSelect" class="select" aria-label="Sort products">
+            <option value="none">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+        <div id="shopGrid" class="prod-grid" aria-live="polite"></div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="page-about" class="page" role="region" aria-labelledby="about-heading">
+        <h1 id="about-heading" style="margin-top:0">About Us</h1>
+        <div class="about-grid" style="margin-bottom:16px;">
+          <div class="about-card">
+            <h3>Our Mission</h3>
+            <p>Relentless K9 builds dependable gear for working dogs and the people who rely on them—handlers, trainers, and everyday owners who demand better than big‑box quality.</p>
+          </div>
+          <div class="about-card">
+            <h3>Craft & Materials</h3>
+            <ul>
+              <li>Heavy‑duty webbing and tactical‑grade stitching</li>
+              <li>Hardware options: solid steel or aviation‑grade aluminum</li>
+              <li>Comfort‑focused design to protect the dog’s neck and coat</li>
+            </ul>
+          </div>
+          <div class="about-card">
+            <h3>Field‑Tested</h3>
+            <p>Products are trained and tested with real dogs before they launch. If it doesn’t hold up, it doesn’t ship.</p>
+          </div>
+          <div class="about-card">
+            <h3>Warranty</h3>
+            <p>Simple promise: if your gear fails under normal use, we’ll repair or replace it. Full policy coming at launch.</p>
+          </div>
+          <div class="about-card">
+            <h3>Programs</h3>
+            <ul>
+              <li>Handler / Trainer bulk orders</li>
+              <li>LEO / Military appreciation discounts</li>
+              <li>Affiliate & ambassador options</li>
+            </ul>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2 style="margin:0 0 6px">Owner’s Statement</h2>
+          <p style="margin:0; color:var(--muted)">Paste the owner’s statement below when it’s ready. The layout will adapt automatically.</p>
+          <div id="ownerStatement" style="min-height:140px; padding:14px 0; color:var(--ink);"></div>
+        </div>
+      </section>
+
+      <!-- CONTACT (placeholder) -->
+      <section id="page-contact" class="page" role="region" aria-labelledby="contact-heading">
+        <h1 id="contact-heading" style="margin-top:0">Contact</h1>
+        <div class="hero-card">
+          <p style="margin:0">Email: <a href="mailto:info@relentlessk9.com">info@relentlessk9.com</a> (update to your real inbox)</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <small>© <span id="year"></span> Relentless K9 LLC. All rights reserved.</small>
+    </footer>
+  </div>
+
+  <script>
+    // Utilities
+    const $ = (sel)=>document.querySelector(sel);
+    const $$ = (sel)=>Array.from(document.querySelectorAll(sel));
+
+    // Set current year
+    $('#year').textContent = new Date().getFullYear();
+
+    // -------- Logo fall-in + sound --------
+    const logoWrap = $('#logoWrapper');
+    const barkAudio = $('#barkAudio');
+    const soundBtn = $('#soundBtn');
+
+    function reveal(){ document.body.classList.add('site-revealed'); }
+
+    // Start animation when image is loaded (prevents jank)
+    const img = $('#rk9Logo');
+    function start(){
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduced){ reveal(); return; }
+      logoWrap.classList.add('play');
+      // Try to play bark for 5 seconds
+      playBark();
+    }
+    if(img.complete){ start(); } else { img.addEventListener('load', start); }
+
+    async function playBark(){
+      try {
+        barkAudio.currentTime = 0;
+        const p = barkAudio.play();
+        if(p && p.then){ await p; }
+        soundBtn.style.display = 'none';
+        setTimeout(()=>{ try{ barkAudio.pause(); }catch(e){} }, 5000);
+      } catch(err){
+        // Autoplay likely blocked — show enable button and also start on first user interaction
+        soundBtn.style.display = 'inline-flex';
+        const once = ()=>{ soundBtn.style.display = 'none'; playBark(); window.removeEventListener('pointerdown', once); };
+        window.addEventListener('pointerdown', once, { once:true });
+      }
+    }
+    soundBtn.addEventListener('click', ()=>{ playBark(); });
+
+    // Reveal site after animation
+    logoWrap.addEventListener('animationend', (e)=>{ if(e.animationName === 'dropIn'){ setTimeout(reveal, 220); } });
+    // Safety timeout: if anything goes wrong, unlock the site after 2.8s
+    setTimeout(()=>{ document.body.classList.add('site-revealed'); }, 2800);
+
+    // -------- Tiny client-side router --------
+    function show(id){
+      $$('.page').forEach(p=>p.classList.remove('active'));
+      const el = document.getElementById('page-'+id);
+      if(el){ el.classList.add('active'); }
+      const h = el && el.querySelector('h1');
+      if(h){ h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); h.removeAttribute('tabindex'); }
+    }
+    function parseHash(){
+      const h = location.hash || '#/';
+      if(h.startsWith('#/shop')){ show('shop'); renderShop(); }
+      else if(h.startsWith('#/about')){ show('about'); }
+      else if(h.startsWith('#/contact')){ show('contact'); }
+      else { show('home'); }
+    }
+    window.addEventListener('hashchange', parseHash);
+    function go(hash){ location.hash = hash; }
+    window.go = go; // expose for inline onclick
+
+    // -------- Shopify Buy Button scaffold --------
+    // Flip enabled:true and fill in your credentials to activate.
+    const SHOPIFY = {
+      enabled: false, // set to true when your store is ready
+      domain: 'YOUR-SHOP.myshopify.com',
+      storefrontAccessToken: 'YOUR_STOREFRONT_TOKEN',
+      moneyFormat: '${{amount}}',
+      productMap: {
+        'leash-6ft': 'PRODUCT_ID_1',
+        'collar-duty': 'PRODUCT_ID_2',
+        'longline-30': 'PRODUCT_ID_3'
+      }
+    };
+
+    function loadShopifyUI(){
+      return new Promise((resolve)=>{
+        if(!SHOPIFY.enabled){ return resolve(null); }
+        const url = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+        function init(){
+          const client = ShopifyBuy.buildClient({ domain: SHOPIFY.domain, storefrontAccessToken: SHOPIFY.storefrontAccessToken });
+          ShopifyBuy.UI.onReady(client).then(ui=>resolve(ui));
+        }
+        if(window.ShopifyBuy && window.ShopifyBuy.UI){ init(); return; }
+        const s = document.createElement('script'); s.async = true; s.src = url; s.onload = init; document.head.appendChild(s);
+      });
+    }
+
+    async function mountShopifyButton(product){
+      if(!SHOPIFY.enabled) return;
+      const shopifyId = SHOPIFY.productMap[product.id];
+      if(!shopifyId) return;
+      const node = document.getElementById('shopify-'+product.id);
+      if(!node) return;
+      const ui = await loadShopifyUI();
+      if(!ui) return;
+      const fallback = node.parentElement.querySelector('.fallback-btn');
+      if(fallback) fallback.remove();
+      node.hidden = false;
+      ui.createComponent('product', {
+        id: shopifyId,
+        node,
+        moneyFormat: SHOPIFY.moneyFormat,
+        options: {
+          product: { buttonDestination: 'cart', isButton: true, contents: { img: false, title: false, price: true } },
+          cart: { startOpen: false },
+          modalProduct: { contents: { img: true, button: true } }
+        }
+      });
+    }
+
+    // -------- Shop: data + rendering + search/sort --------
+    const PRODUCTS = [
+      { id:'leash-6ft', name:'RK9 Tactical Leash (6ft)', price:39.00, image:'https://images.unsplash.com/photo-1558944351-c7ad7f58f823?q=80&w=1400&auto=format&fit=crop' },
+      { id:'collar-duty', name:'Duty Collar (1.5in, steel buckle)', price:45.00, image:'https://images.unsplash.com/photo-1596495578065-3b8ea4c7b9f1?q=80&w=1400&auto=format&fit=crop' },
+      { id:'longline-30', name:'Training Long Line (30ft)', price:34.00, image:'https://images.unsplash.com/photo-1525253013412-55c1a69a5738?q=80&w=1400&auto=format&fit=crop' }
+    ];
+
+    const shopGrid = $('#shopGrid');
+    const searchInput = $('#searchInput');
+    const sortSelect = $('#sortSelect');
+
+    function renderShop(){
+      const q = (searchInput.value||'').trim().toLowerCase();
+      const sort = sortSelect.value;
+      let list = PRODUCTS.filter(p => p.name.toLowerCase().includes(q));
+      if(sort === 'price-asc') list = list.slice().sort((a,b)=>a.price-b.price);
+      if(sort === 'price-desc') list = list.slice().sort((a,b)=>b.price-a.price);
+
+      shopGrid.innerHTML = list.map(p=>`<article class="card">
+          <img src="${p.image}" alt="${p.name}">
+          <div class="info">
+            <strong>${p.name}</strong>
+            <span class="price">$${p.price.toFixed(2)}</span>
+            <div id="shopify-${p.id}" class="shopify-root" hidden></div>
+            <button class="btn fallback-btn" aria-label="Add ${p.name} to cart" onclick="alert('Cart coming soon — Shopify button will appear once configured.')">Add to cart</button>
+          </div>
+        </article>`).join('');
+
+      if(SHOPIFY.enabled){ list.forEach(p=> mountShopifyButton(p)); }
+
+      if(list.length === 0){ shopGrid.innerHTML = `<div class="hero-card" style="grid-column:1/-1">No products match "${q}".</div>`; }
+    }
+
+    searchInput && searchInput.addEventListener('input', renderShop);
+    sortSelect && sortSelect.addEventListener('change', renderShop);
+
+    // Initial route + shop render
+    parseHash();
+    renderShop();
+  </script>
+</body>
+</html>
