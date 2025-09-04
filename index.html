@@ -155,6 +155,59 @@
       .hero{ grid-template-columns: 1fr; }
       .links{ display:none }
     }
+
+    /* Help widget */
+    .help-widget{
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      width:260px;
+      background:var(--brand);
+      color:var(--ink);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      font-size:14px;
+    }
+    .help-widget .help-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:8px 12px;
+      cursor:pointer;
+    }
+    .help-widget .help-form{
+      padding:0 12px 12px;
+      display:none;
+      flex-direction:column;
+      gap:8px;
+    }
+    .help-widget.open .help-form{ display:flex; }
+    .help-widget input,
+    .help-widget textarea{
+      width:100%;
+      border:1px solid var(--accent);
+      background:var(--bg-2);
+      color:var(--ink);
+      border-radius:8px;
+      padding:6px;
+    }
+    .help-widget textarea{ resize:vertical; min-height:60px; }
+    .help-widget button{
+      background:var(--bg-2);
+      color:var(--ink);
+      border:1px solid var(--ring);
+      border-radius:8px;
+      padding:6px 10px;
+      cursor:pointer;
+    }
+    #helpToggle{
+      border:none;
+      background:none;
+      color:var(--ink);
+      font-size:16px;
+      cursor:pointer;
+    }
   </style>
 </head>
 <body>
@@ -273,9 +326,27 @@
       </section>
     </main>
 
-    <footer>
+  <footer>
       <small>© <span id="year"></span> Relentless K9 LLC. All rights reserved.</small>
     </footer>
+  </div>
+
+  <div id="helpWidget" class="help-widget">
+    <div class="help-header">
+      <span>Need help?</span>
+      <button id="helpToggle" aria-label="Toggle help form">▲</button>
+    </div>
+    <form id="helpForm" class="help-form">
+      <label>
+        Email
+        <input type="email" name="email" required>
+      </label>
+      <label>
+        How can we help?
+        <textarea name="message" required></textarea>
+      </label>
+      <button type="submit">Send</button>
+    </form>
   </div>
 
   <script>
@@ -439,6 +510,27 @@
 
     searchInput && searchInput.addEventListener('input', renderShop);
     sortSelect && sortSelect.addEventListener('change', renderShop);
+
+    // Help widget
+    const helpWidget = document.getElementById('helpWidget');
+    const helpToggle = document.getElementById('helpToggle');
+    const helpForm = document.getElementById('helpForm');
+
+    helpToggle.addEventListener('click', ()=>{
+      helpWidget.classList.toggle('open');
+      helpToggle.textContent = helpWidget.classList.contains('open') ? '▼' : '▲';
+    });
+
+    helpForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const email = helpForm.email.value.trim();
+      const message = helpForm.message.value.trim();
+      const mailto = `mailto:chacebyers08@gmail.com?subject=Help%20Request%20from%20${encodeURIComponent(email)}&body=${encodeURIComponent(message)}`;
+      window.location.href = mailto;
+      helpWidget.classList.remove('open');
+      helpToggle.textContent = '▲';
+      helpForm.reset();
+    });
 
     // Initial route + shop render
     parseHash();
