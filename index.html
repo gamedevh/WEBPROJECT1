@@ -62,22 +62,27 @@
     /* -------- Intro overlay with blurred background -------- */
     #intro{
       position:fixed; inset:0; z-index:9999;
-      display:grid; place-items:center; 
+      display:grid; place-items:center;
       pointer-events:auto; /* block access until reveal */
+      transition: opacity .8s ease, visibility .8s ease;
+    }
+    #intro::before{
+      content:""; position:absolute; inset:0;
       background:rgba(10,12,16,.35);
       backdrop-filter: blur(18px) saturate(120%);
       -webkit-backdrop-filter: blur(18px) saturate(120%);
-      transition: opacity .8s ease, visibility .8s ease;
+      z-index:-1;
     }
     body.site-revealed #intro{ opacity:0; visibility:hidden; pointer-events:none; }
 
     .logo-wrap{
-      position:absolute; top:50%; left:50%; transform:translate(-50%,-160vh) scale(.96); 
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-160vh) scale(.96);
       display:flex; align-items:center; justify-content:center;
-      width:min(64vmin, 420px); aspect-ratio:1/1; 
+      width:min(64vmin, 420px); aspect-ratio:1/1;
       filter: drop-shadow(0 30px 60px rgba(0,0,0,.45));
       will-change: transform;
       opacity:0;
+      z-index:1;
     }
 
     /* Smoother falling logo animation */
@@ -510,22 +515,27 @@
     /* -------- Intro overlay with blurred background -------- */
     #intro{
       position:fixed; inset:0; z-index:9999;
-      display:grid; place-items:center; 
+      display:grid; place-items:center;
       pointer-events:auto; /* block access until reveal */
+      transition: opacity .8s ease, visibility .8s ease;
+    }
+    #intro::before{
+      content:""; position:absolute; inset:0;
       background:rgba(10,12,16,.35);
       backdrop-filter: blur(18px) saturate(120%);
       -webkit-backdrop-filter: blur(18px) saturate(120%);
-      transition: opacity .8s ease, visibility .8s ease;
+      z-index:-1;
     }
     body.site-revealed #intro{ opacity:0; visibility:hidden; pointer-events:none; }
 
     .logo-wrap{
-      position:absolute; top:50%; left:50%; transform:translate(-50%,-160vh) scale(.96); 
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-160vh) scale(.96);
       display:flex; align-items:center; justify-content:center;
-      width:min(64vmin, 420px); aspect-ratio:1/1; 
+      width:min(64vmin, 420px); aspect-ratio:1/1;
       filter: drop-shadow(0 30px 60px rgba(0,0,0,.45));
       will-change: transform;
       opacity:0;
+      z-index:1;
     }
 
     /* Smoother falling logo animation */
